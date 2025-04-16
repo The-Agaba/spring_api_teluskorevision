@@ -2,8 +2,23 @@ spring:
   application:
     name: store
   datasource:
-    url: jdbc:mysql://localhost:3306/store_api?createDatabaseIfNotExist=true
-    username: root
-    password: MyPassword!
+    url: jdbc:postgresql://localhost:5432/spring_stater_db
+    username: postgres
+    password: 1234
   jpa:
+    hibernate:
+      ddl-auto: create-drop   # creates tables automatically
     show-sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+
+
+server:
+  port: 8083
+
+
+
