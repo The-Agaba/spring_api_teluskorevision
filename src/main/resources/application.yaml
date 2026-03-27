@@ -1,13 +1,15 @@
 spring:
   application:
     name: store
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/spring_stater_db
+    url: jdbc:postgresql://localhost:5434/spring_stater_db
     username: postgres
     password: 1234
+
   jpa:
     hibernate:
-      ddl-auto: create-drop   # creates tables automatically
+      ddl-auto: update
     show-sql: true
     defer-datasource-initialization: true
 
@@ -16,9 +18,9 @@ spring:
       mode: always
 
 
+  jwt:
+    secret: ${JWT_SECRET:PjrJwcOaMsduj7k5PO4i1On2BnaeR/8DcKla/P5c q5ewz0JVyQQgtcHkvsbc4jtPclF7kJegfpSFAJrpuV9Dcg==}
+
 
 server:
   port: 8083
-
-
-

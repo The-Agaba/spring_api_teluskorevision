@@ -1,0 +1,114 @@
+package com.springboot.store.controllers;
+
+import com.springboot.store.dtos.ProductDto;
+import com.springboot.store.entities.Product;
+import com.springboot.store.mappers.ProductMapper;
+import com.springboot.store.repositories.CategoryRepository;
+import com.springboot.store.repositories.ProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.support.UriComponentsContributor;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+@AllArgsConstructor
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+    private final ProductMapper productMapper;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final UriComponentsContributor uriComponentsContributor;
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    @GetMapping
+    public List<ProductDto> getProducts(
+            @RequestParam(name = "categoryId", required = false) Byte categoryId
+    ) {
+        List<Product> products;
+       if(categoryId != null){
+           products=productRepository.findByCategoryId(categoryId);
+       }else{
+           products=productRepository.findAllWithCategory();
+       }
+
+       return products.stream().map(productMapper::toDto).toList();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id){
+        var  product = productRepository.findById(id).orElse(null);
+        if(product ==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productMapper.toDto(product));
+    }
+
+    @PostMapping
+    public  ResponseEntity<ProductDto> createProduct(
+            @RequestBody ProductDto productDto,
+            UriComponentsBuilder builder
+    ){
+        var product=productMapper.toEntity(productDto);
+        var uri=builder.path("api/products/{id}").buildAndExpand(productDto.getId()).toUri();
+        var category=categoryRepository.findById(productDto.getCategoryId()).orElse(null);
+        if(category==null){
+
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        product.setCategory(category);
+        productRepository.save(product);
+        productDto.setId(product.getId());
+        return ResponseEntity.created(uri).body(productDto);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable Long id,
+            @RequestBody ProductDto productDto
+    ){
+      var category=categoryRepository.findById(productDto.getCategoryId()).orElse(null);
+        if(category==null){
+            return ResponseEntity.notFound().build();
+        }
+
+  var product=productRepository.findById(id).orElse(null);
+  if(product==null){
+      return ResponseEntity.notFound().build();
+  }
+
+     productMapper.updateProduct(productDto, product);
+     product.setCategory(category);
+     productRepository.save(product);
+     productDto.setId(product.getId());
+     return ResponseEntity.ok(productDto);
+    }
+
+    @DeleteMapping("{id}")
+    @Transactional
+    public ResponseEntity<ProductDto> deleteProduct(
+            @PathVariable Long id
+    ){
+        var product=productRepository.findById(id).orElse(null);
+        if(product==null){
+            return ResponseEntity.notFound().build();
+        }
+
+        entityManager.createNativeQuery(
+                        "DELETE FROM wishlist WHERE product_id = :id"
+                ).setParameter("id", id)
+                .executeUpdate();
+
+        productRepository.delete(product);
+        return ResponseEntity.noContent().build();
+    }
+
+}
