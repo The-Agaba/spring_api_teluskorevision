@@ -1,0 +1,17 @@
+ALTER TABLE users
+    ADD role VARCHAR(255);
+
+ALTER TABLE users
+    ALTER COLUMN role SET NOT NULL;
+
+ALTER TABLE cart_items
+    ALTER COLUMN cart_id DROP NOT NULL;
+
+ALTER TABLE products
+    ALTER COLUMN price TYPE DECIMAL USING (price::DECIMAL);
+
+ALTER TABLE cart_items
+    ALTER COLUMN product_id DROP NOT NULL;
+
+ALTER TABLE cart_items
+    ALTER COLUMN quantity DROP NOT NULL;

@@ -28,13 +28,15 @@ ALTER TABLE users ENABLE TRIGGER ALL;
 -- =====================
 -- USERS
 -- =====================
-INSERT INTO users (name, email, password)
-VALUES
-    ('John Doe', 'john.doe@example.com', 'password123'),
-    ('Jane Smith', 'jane.smith@example.com', 'password456'),
-    ('Alice Johnson', 'alice.johnson@example.com', 'passAlice789'),
-    ('Bob Williams', 'bob.williams@example.com', 'bobPass321'),
-    ('Charlie Brown', 'charlie.brown@example.com', 'charlie987');
+INSERT INTO users (name, email, password, role) VALUES
+                                                    ('John Doe',      'john.doe@example.com',      'password123', 'USER'),
+                                                    ('Jane Smith',    'jane.smith@example.com',     'password456', 'USER'),
+                                                    ('Alice Johnson', 'alice.johnson@example.com',  'passAlice789','USER'),
+                                                    ('Bob Williams',  'bob.williams@example.com',   'bobPass321',  'USER'),
+                                                    ('Charlie Brown', 'charlie.brown@example.com',  'charlie987',  'USER');
+
+
+
 
 -- =====================
 -- PROFILES

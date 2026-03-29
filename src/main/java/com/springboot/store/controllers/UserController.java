@@ -5,6 +5,7 @@ import com.springboot.store.dtos.ChangePasswordRequest;
 import com.springboot.store.dtos.RegisterUserRequest;
 import com.springboot.store.dtos.UpdateUserRequest;
 import com.springboot.store.dtos.UserDto;
+import com.springboot.store.entities.Role;
 import com.springboot.store.mappers.UserMapper;
 import com.springboot.store.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -67,6 +68,7 @@ public class UserController {
         var user=userMapper.toEntity(request);
         //we first encode the password before sending it
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         var userDto=userMapper.toDto(user);
