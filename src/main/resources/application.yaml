@@ -11,7 +11,7 @@ spring:
     refreshTokenExpiration: 604800
 
   profiles:
-    active: dev
+    default: dev
 
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
