@@ -37,16 +37,16 @@ public class CartController {
         var uri= uriBuilder.path("/carts/{id}").buildAndExpand(cartDto.getId()).toUri();
 
 
-
         return ResponseEntity.created(uri).body(cartDto);
     }
 
     @PostMapping("/{cartId}/items")
     @Operation(description = "This adds product to cart") // this is used to add description to an endpoint
-    public ResponseEntity<CartItemDto> addtoCart(
+    public ResponseEntity<CartItemDto> addToCart(
             @PathVariable UUID cartId,
             @RequestBody AddItemToCartRequest request
     ){
+
        var cartItemDto=cartService.addToCart(cartId,request.getProductId());
        return ResponseEntity.status(HttpStatus.CREATED).body(cartItemDto);
     }

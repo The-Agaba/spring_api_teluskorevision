@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -20,8 +21,13 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "date_created", insertable = false, updatable = false)
+    @Column(name = "date_created", updatable = false)
     private LocalDate dateCreated;
+
+    @PrePersist
+    public void prePersist() {
+        this.dateCreated = LocalDate.now();
+    }
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch =FetchType.EAGER)
     private Set<CartItem> items = new LinkedHashSet<>();
@@ -43,7 +49,6 @@ public class Cart {
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
                 .orElse(null);
-
     }
 
     public CartItem addItem(Product product){
@@ -52,6 +57,7 @@ public class Cart {
         if (cartItem !=null){
             cartItem.setQuantity(cartItem.getQuantity()+1);
         }else{
+
             cartItem=new CartItem();
             cartItem.setProduct(product);
             cartItem.setQuantity(1);
@@ -61,6 +67,7 @@ public class Cart {
 
         return cartItem;
     }
+
     public void removeItem(Long productId){
         var cartItem=getItem(productId);
         if(cartItem !=null){
@@ -70,5 +77,8 @@ public class Cart {
     }
     public void clear(){
        items.clear();
+    }
+    public boolean isEmpty(){
+        return items.isEmpty();
     }
 }

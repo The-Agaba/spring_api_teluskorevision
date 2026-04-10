@@ -1,6 +1,6 @@
 package com.springboot.store.entities;
 
-public enum OrderStatus {
+public enum PaymentStatus {
     PENDING,
     PAID,
     FAILED,

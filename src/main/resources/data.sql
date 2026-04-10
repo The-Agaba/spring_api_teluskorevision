@@ -2,28 +2,18 @@
 -- CLEAR TABLES
 -- =====================
 -- Disable FK checks first
-ALTER TABLE wishlist DISABLE TRIGGER ALL;
-ALTER TABLE addresses DISABLE TRIGGER ALL;
-ALTER TABLE profiles DISABLE TRIGGER ALL;
-ALTER TABLE products DISABLE TRIGGER ALL;
-ALTER TABLE categories DISABLE TRIGGER ALL;
-ALTER TABLE users DISABLE TRIGGER ALL;
-
--- Clear tables in order to avoid FK conflicts
+-- =====================
+-- CLEAR TABLES
+-- =====================
+-- Use TRUNCATE with RESTART IDENTITY CASCADE to clean data safely.
+-- Avoid ALTER TABLE ... DISABLE TRIGGER which may require superuser privileges
+-- and can cause the initialization script to fail.
 TRUNCATE TABLE wishlist RESTART IDENTITY CASCADE;
 TRUNCATE TABLE addresses RESTART IDENTITY CASCADE;
 TRUNCATE TABLE profiles RESTART IDENTITY CASCADE;
 TRUNCATE TABLE products RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categories RESTART IDENTITY CASCADE;
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
-
--- Enable FK checks back
-ALTER TABLE wishlist ENABLE TRIGGER ALL;
-ALTER TABLE addresses ENABLE TRIGGER ALL;
-ALTER TABLE profiles ENABLE TRIGGER ALL;
-ALTER TABLE products ENABLE TRIGGER ALL;
-ALTER TABLE categories ENABLE TRIGGER ALL;
-ALTER TABLE users ENABLE TRIGGER ALL;
 
 -- =====================
 -- USERS
@@ -48,6 +38,20 @@ VALUES
     ('Gamer and coder', '0789123456', '1997-12-05', 300, 3),
     ('Foodie and traveler', '0765432198', '1999-03-15', 180, 4),
     ('Fitness fanatic', '0745678912', '1995-07-30', 220, 5);
+
+-- Make profiles insert idempotent: if rows with the same id already exist, update them.
+INSERT INTO profiles (bio, phone_number, date_of_birth, loyalty_points, id)
+VALUES
+    ('Tech enthusiast', '0712345678', '1998-05-10', 120, 1),
+    ('Fashion lover', '0756789123', '2000-08-22', 250, 2),
+    ('Gamer and coder', '0789123456', '1997-12-05', 300, 3),
+    ('Foodie and traveler', '0765432198', '1999-03-15', 180, 4),
+    ('Fitness fanatic', '0745678912', '1995-07-30', 220, 5)
+ON CONFLICT (id) DO UPDATE SET
+    bio = EXCLUDED.bio,
+    phone_number = EXCLUDED.phone_number,
+    date_of_birth = EXCLUDED.date_of_birth,
+    loyalty_points = EXCLUDED.loyalty_points;
 
 -- =====================
 -- ADDRESSES

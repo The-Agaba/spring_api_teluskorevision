@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_stater_db
+    username: postgres
+    password: 1234
+
+  jpa:
+    show-sql: true
+
+server:
+  port: 8083
+
+websiteUrl: http://localhost:4242

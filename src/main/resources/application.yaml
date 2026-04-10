@@ -1,31 +1,19 @@
 spring:
   application:
     name: store
+  config:
+    import: optional:file:.env[.properties]
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/spring_stater_db
-    username: postgres
-    password: 1234
-
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    defer-datasource-initialization: true
-
-  sql:
-    init:
-      mode: always
 
   jwt:
-    secret: ${JWT_SECRET:PjrJwcOaMsduj7k5PO4i1On2BnaeR/8DcKla/P5cq5ewz0JVyQQgtcHkvsbc4jtPclF7kJegfpSFAJrpuV9Dcg==}
-    accessTokenExpiration: 900
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 7200
     refreshTokenExpiration: 604800
 
-server:
-  port: 8083
+  profiles:
+    active: dev
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+  webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
+

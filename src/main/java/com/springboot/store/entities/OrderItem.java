@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrderItem {
 
     @Id
@@ -36,4 +35,12 @@ public class OrderItem {
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+
+    public OrderItem(Order order, Product product, Integer quantity) {
+        this.order=order;
+        this.product=product;
+        this.quantity=quantity;
+        this.unitPrice=product.getPrice();
+        this.totalPrice=unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
 }
