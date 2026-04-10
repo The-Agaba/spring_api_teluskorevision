@@ -1,12 +1,11 @@
 package com.springboot.store.services;
 
 import com.springboot.store.config.JwtConfig;
-import com.springboot.store.entities.Role;
+
 import com.springboot.store.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
